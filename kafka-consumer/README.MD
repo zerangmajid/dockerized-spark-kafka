@@ -68,7 +68,7 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    ```
 2. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
 
-   ![KafkaHQ Message Details](sandbox:/mnt/data/image.png)
+ ![hashtag Screenshot]( https://github.com/zerangmajid/dockerized-spark-kafka/blob/d8d1db635729ed4893fdb56211349339ba68bcb8/Images/ConsumerWithHashashtag.png?raw=true)
 
 ## Additional Notes
 
