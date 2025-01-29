@@ -75,6 +75,18 @@ This allows you to control the rate of data ingestion for processing.
 
 ![Batch Configuration](sandbox:/mnt/data/image.png)
 
+## 6. Monitoring Completed Jobs
+
+Spark allows you to monitor the progress and performance of your streaming jobs using the Spark UI. Below is an example of the completed jobs:
+
+![Completed Jobs in Spark UI](sandbox:/mnt/data/image.png)
+
+- Each row represents a completed job (or batch) in the streaming pipeline.
+- The `Duration` column shows the time taken to process each batch.
+- The `Tasks` column provides details about the number of tasks executed and their success status.
+
+For example, if the batch size is set to 100, each job processes up to 100 records. This setting ensures optimal performance by balancing the processing load and latency.
+
 ## Additional Notes
 
 - **Monitoring Spark Jobs:** Use the Spark Master UI to monitor running and completed jobs.
