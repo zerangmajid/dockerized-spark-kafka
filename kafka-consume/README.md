@@ -60,9 +60,11 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    Sent message 2
    ...
    ```
-   ![image](https://github.com/user-attachments/assets/70610e59-665c-4c1c-9b67-cd10111df80c)
+   ![image](https://github.com/user-attachments/assets/b6ae5457-c40d-4009-b7d8-2e397d61c6f3)
+![image](https://github.com/user-attachments/assets/b4727a99-aa27-4892-92cc-7b7c5e2bd15f)
 
-2. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
+
+3. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
 
 ## Additional Notes
 
