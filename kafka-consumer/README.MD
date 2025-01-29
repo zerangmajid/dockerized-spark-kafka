@@ -27,33 +27,62 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    from json import dumps
    from kafka import KafkaProducer
 
-   # Kafka producer configuration
+   def filterData(item):
+       cleansed_data = {
+           "id": item["id"],
+           "content": item["content"],
+           "sendTime": item["sendTime"],
+           "sendTimePersian": item["sendTimePersian"],
+           "senderName": item["senderName"],
+           "senderUsername": item["senderUsername"],
+           "type": item["type"],
+           "raw-data": item
+       }
+       return cleansed_data
+
    producer = KafkaProducer(
        bootstrap_servers=['kafka-broker:29092'],
        value_serializer=lambda x: dumps(x).encode('utf-8'),
        key_serializer=str.encode
    )
 
-   # Kafka topic name
-   TOPIC_NAME = 'example-topic'
+   TOPIC_NAME = "SahamYab-Session_16"
 
-   # Example of sending data
-   for i in range(10):
-       producer.send(TOPIC_NAME, value={'key': i, 'value': f'Message {i}'}).
-       print(f"Sent message {i}")
-       time.sleep(1)
+   url = "https://www.sahamyab.com/guest/twitter/list?v=0.1"
+   delay = 10
+   cnt = 0
+
+   while True:
+       try:
+           response = requests.request('GET', url, headers={'User-Agent': 'Chrome/116'})
+           if response.status_code == requests.codes.ok:
+               items = response.json()['items']
+               for item in items:
+                   cnt += 1
+                   print(f"-- {cnt:4} - {item['id']}")
+                   if not item.get('content'):
+                       print("tweet is unacceptable")
+                       continue
+                   else:
+                       data = filterData(item)
+                       producer.send(TOPIC_NAME, value=data, key=item['id'])
+           else:
+               print(f"Error in fetch data: {response.status_code}")
+           time.sleep(delay)
+       except Exception as e:
+           print(e)
+           continue
    ```
 
 3. Run the cells to execute the producer script.
 
-![Kafka Producer in Jupyter](sandbox:/mnt/data/image.png)
+ 
 
 ### 3. Verify Messages in KafkaHQ
 
 1. Open KafkaHQ at [http://localhost:9080](http://localhost:9080).
 2. Navigate to the **Topics** section.
-
-   ![KafkaHQ Topics](sandbox:/mnt/data/image.png)
+ 
 
 3. Select the topic `example-topic` to view the messages produced by the Kafka Producer.
 
@@ -61,9 +90,10 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
 
 1. In the Jupyter Notebook, you will see logs of messages being sent:
    ```plaintext
-   Sent message 0
-   Sent message 1
-   Sent message 2
+   --   1 - 453132607
+   --   2 - 453132608
+   tweet is unacceptable
+   --   3 - 453132609
    ...
    ```
 2. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
