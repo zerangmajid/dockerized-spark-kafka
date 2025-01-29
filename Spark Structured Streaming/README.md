@@ -21,7 +21,6 @@ os.environ['PYSPARK_SUBMIT_ARGS'] = '--packages org.apache.spark:spark-sql-kafka
 
 > **Note:** Ensure the Kafka package version matches your Spark version. 
 
-![Kafka Configuration in Spark](sandbox:/mnt/data/image.png)
 
 ## 3. Create a DataFrame from Kafka
 
@@ -41,8 +40,6 @@ df = spark \
 - The `readStream` method initializes a streaming DataFrame.
 - The `format("kafka")` specifies Kafka as the data source.
 - The `startingOffsets` option ensures data is read from the beginning of the topic.
-
-![Streaming DataFrame Code](sandbox:/mnt/data/image.png)
 
 ## 4. Understanding Lazy Execution in Spark
 
