@@ -57,8 +57,6 @@ df = spark \
     .load()
 ```
 
-![Lazy Execution Explanation](sandbox:/mnt/data/image.png)
-
 ## 5. Batch Processing Configuration
 
 In this step, Spark processes tweets in streaming mode using batches. The number of records in each batch can be controlled using the `maxOffsetsPerTrigger` option.
