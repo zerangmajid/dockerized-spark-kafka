@@ -1,60 +1,73 @@
-# Kafka Consumer Integration
+# Kafka Producer Using Jupyter Notebook
 
-This document provides details on implementing and using a Kafka consumer in the *create-kafka-consumer** step of the project.
+This document provides a step-by-step guide to running a Kafka Producer using Jupyter Notebook and verifying the results.
 
-## Overview
+## Steps to Run the Producer and Verify Results
 
-In this step, a Kafka consumer is created to consume messages from a Kafka topic. The consumer will process and print the messages in real time.
+### 1. Access Jupyter Notebook
 
-## Prerequisites
-
-1. A running Kafka Broker and Zookeeper.
-2. Kafka topic(s) created and populated with messages.
-3. Python and required libraries installed.
-
-## Kafka Consumer Example
-
-Below is an example Python script to create a Kafka consumer:
-
-```python
-from kafka import KafkaConsumer
-from json import loads
-
-consumer = KafkaConsumer(
-    'your-topic-name',
-    bootstrap_servers=['kafka-broker:29092'],
-    auto_offset_reset='earliest',
-    enable_auto_commit=True,
-    group_id='your-group-id',
-    value_deserializer=lambda x: loads(x.decode('utf-8'))
-)
-
-for message in consumer:
-    print(f"Consumed message: {message.value}")
-```
-
-## How to Run
-
-1. Ensure Kafka and Zookeeper are running.
-2. Replace `'your-topic-name'` and `'your-group-id'` in the script with your topic and group ID.
-3. Run the script:
-
+1. Run the following command to access the logs of the Jupyter Notebook container:
    ```bash
-   python consumer.py
+   docker logs pyspark
    ```
 
-4. Observe the messages being consumed in real time.
+2. Copy the URL for Jupyter Notebook from the logs (e.g., `http://127.0.0.1:8888/?token=...`) and open it in your web browser.
 
-## Notes
+### 2. Create or Load a Notebook
 
-- The `auto_offset_reset` parameter can be set to `earliest` or `latest` based on when you want the consumer to start reading messages.
-- The `group_id` is essential for Kafka's consumer group management.
+1. Once Jupyter Notebook is open, create a new notebook or open an existing one.
+2. Add the following Kafka Producer script to the notebook:
 
-## Troubleshooting
+   ```python
+   import time
+   import requests
+   import re
+   from pprint import pprint
+   from json import dumps
+   from kafka import KafkaProducer
 
-- If the consumer is not receiving messages, ensure the Kafka topic has messages and is correctly named in the script.
-- Check the Kafka Broker's logs for errors.
+   # Kafka producer configuration
+   producer = KafkaProducer(
+       bootstrap_servers=['kafka-broker:29092'],
+       value_serializer=lambda x: dumps(x).encode('utf-8'),
+       key_serializer=str.encode
+   )
+
+   # Kafka topic name
+   TOPIC_NAME = 'example-topic'
+
+   # Example of sending data
+   for i in range(10):
+       producer.send(TOPIC_NAME, value={'key': i, 'value': f'Message {i}'})
+       print(f"Sent message {i}")
+       time.sleep(1)
+   ```
+
+3. Run the cells to execute the producer script.
+
+### 3. Verify Messages in KafkaHQ
+
+1. Open KafkaHQ at [http://localhost:9080](http://localhost:9080).
+2. Navigate to the **Topics** section.
+3. Select the topic `example-topic` to view the messages produced by the Kafka Producer.
+
+### 4. Observe the Output
+
+1. In the Jupyter Notebook, you will see logs of messages being sent:
+   ```plaintext
+   Sent message 0
+   Sent message 1
+   Sent message 2
+   ...
+   ```
+2. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
+
+## Additional Notes
+
+- Ensure Kafka and Zookeeper services are running before starting the producer.
+- Modify the topic name and message content as needed for your use case.
+- If the producer encounters errors, check the Kafka Broker logs for troubleshooting.
 
 ## Next Steps
 
-Proceed to **session16-3-prepare-df-read-stream-spark** to process the consumed messages in Apache Spark.
+Proceed to the next stage to consume and process these messages using Kafka Consumer.
