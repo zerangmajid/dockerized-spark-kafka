@@ -11,6 +11,8 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    docker logs pyspark
    ```
 
+   ![Jupyter Notebook Logs](sandbox:/mnt/data/image.png)
+
 2. Copy the URL for Jupyter Notebook from the logs (e.g., `http://127.0.0.1:8888/?token=...`) and open it in your web browser.
 
 ### 2. Create or Load a Notebook
@@ -38,17 +40,22 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
 
    # Example of sending data
    for i in range(10):
-       producer.send(TOPIC_NAME, value={'key': i, 'value': f'Message {i}'})
+       producer.send(TOPIC_NAME, value={'key': i, 'value': f'Message {i}'}).
        print(f"Sent message {i}")
        time.sleep(1)
    ```
 
 3. Run the cells to execute the producer script.
 
+![Kafka Producer in Jupyter](sandbox:/mnt/data/image.png)
+
 ### 3. Verify Messages in KafkaHQ
 
 1. Open KafkaHQ at [http://localhost:9080](http://localhost:9080).
 2. Navigate to the **Topics** section.
+
+   ![KafkaHQ Topics](sandbox:/mnt/data/image.png)
+
 3. Select the topic `example-topic` to view the messages produced by the Kafka Producer.
 
 ### 4. Observe the Output
@@ -61,6 +68,8 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    ...
    ```
 2. In KafkaHQ, you will see the messages stored in the topic with their respective keys and values.
+
+   ![KafkaHQ Message Details](sandbox:/mnt/data/image.png)
 
 ## Additional Notes
 
