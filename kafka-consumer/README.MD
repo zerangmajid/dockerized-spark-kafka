@@ -11,7 +11,8 @@ In this step, we use a Kafka Consumer to:
 2. Extract hashtags from the message content.
 3. Send the updated messages to a new Kafka topic.
 
- (https://github.com/zerangmajid/dockerized-spark-kafka/blob/e6c3f930f976036d6d288e365df38aeb4318b728/Images/KafkkaHQ1.png?raw=true)
+ 
+![KafkaHQ Screenshot](https://github.com/zerangmajid/dockerized-spark-kafka/blob/main/Images/KafkkaHQ1.png?raw=true)
 
 
 The updated messages will include a new field for hashtags, as shown in the example message below:
