@@ -1,4 +1,3 @@
-
 # Kafka Consumer Using Jupyter Notebook
 
 This document provides a step-by-step guide for running a Kafka Consumer to process messages and send the results to a new Kafka topic.
@@ -11,26 +10,31 @@ In this step, we use a Kafka Consumer to:
 2. Extract hashtags from the message content.
 3. Send the updated messages to a new Kafka topic.
 
- 
-![KafkaHQ Screenshot](https://github.com/zerangmajid/dockerized-spark-kafka/blob/main/Images/KafkkaHQ1.png?raw=true)
-
+![Kafka Topics in KafkaHQ](sandbox:/mnt/data/image.png)
 
 The updated messages will include a new field for hashtags, as shown in the example message below:
 
 ```json
 {
-  "id": "453132511",
-  "content": "#ایران سازی! در سال ۱۳۴۲ با مشارکت کشور رومانی در شهرک تبریز تأسیس شد.",
-  "sendTime": "2024-10-09T05:07:22Z",
-  "sendTimePersian": "1403/07/18 08:37",
-  "senderName": "tradtest:insta",
-  "senderUsername": "atiehbir",
+  "id": "455497282",
+  "content": "#تجزیه الگوری و اهداف در دفترچه!",
+  "sendTime": "2025-01-29T06:31:00Z",
+  "sendTimePersian": "1403/11/10 10:01",
+  "senderName": "شایان",
+  "senderUsername": "shayan11",
   "type": "twit",
   "hashtags": [
-    "#ایران"
+    "#تجزیه"
   ]
 }
 ```
+
+## Partitions and Consumers
+
+1. **Partitions and Consumer Groups:**
+   - Each partition in Kafka can only be read by one consumer from a consumer group.
+
+![Partition and Consumers Explanation](sandbox:/mnt/data/image.png)
 
 ## Steps
 
