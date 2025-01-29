@@ -10,9 +10,8 @@ This document provides a step-by-step guide to running a Kafka Producer using Ju
    ```bash
    docker logs pyspark
    ```
-
-   ![Jupyter Notebook Logs](sandbox:/mnt/data/image.png)
-
+![pyspark Screenshot]( https://github.com/zerangmajid/dockerized-spark-kafka/blob/b612a748e836a69842b5a209faca912c71d419c9/Images/logs%20pyspark.png?raw=true)
+ 
 2. Copy the URL for Jupyter Notebook from the logs (e.g., `http://127.0.0.1:8888/?token=...`) and open it in your web browser.
 
 ### 2. Create or Load a Notebook
