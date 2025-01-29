@@ -42,23 +42,6 @@ This project demonstrates the integration of Apache Spark and Apache Kafka using
    - **PySpark Jupyter Notebook**: [http://localhost:8888](http://localhost:8888)
    - **KafkaHQ**: [http://localhost:9080](http://localhost:9080)
 
-## Kafka Producer Example
-
-This project includes a Python script to produce messages to Kafka topics. Below is an example of how to configure a Kafka Producer:
-
-```python
-from kafka import KafkaProducer
-from json import dumps
-
-producer = KafkaProducer(
-    bootstrap_servers=['kafka-broker:29092'],
-    value_serializer=lambda x: dumps(x).encode('utf-8'),
-    key_serializer=str.encode
-)
-
-producer.send('your-topic-name', key='your-key', value={'example': 'data'})
-```
-
 ## Monitoring Kafka Topics
 
 1. Open KafkaHQ at [http://localhost:9080](http://localhost:9080).
