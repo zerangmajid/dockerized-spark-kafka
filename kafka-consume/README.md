@@ -1,87 +1,60 @@
+# Kafka Consumer Integration
 
-# Spark & Kafka Integration
+This document provides details on implementing and using a Kafka consumer in the **session16-2-create-kafka-consumer** step of the project.
 
-This project demonstrates the integration of Apache Spark and Apache Kafka using Docker Compose. The setup includes Spark Master, Spark Workers, PySpark, Zookeeper, Kafka Broker, Schema Registry, and KafkaHQ for monitoring Kafka topics.
+## Overview
+
+In this step, a Kafka consumer is created to consume messages from a Kafka topic. The consumer will process and print the messages in real time.
 
 ## Prerequisites
 
-1. Docker and Docker Compose installed.
-2. Basic understanding of Kafka and Spark.
+1. A running Kafka Broker and Zookeeper.
+2. Kafka topic(s) created and populated with messages.
+3. Python and required libraries installed.
 
-## Services Overview
+## Kafka Consumer Example
 
-- **Spark Master**: Manages Spark cluster resources.
-- **Spark Workers**: Executes tasks assigned by Spark Master.
-- **PySpark**: Provides Jupyter Notebook interface to submit Spark jobs.
-- **Zookeeper**: Coordinates distributed services.
-- **Kafka Broker**: Manages Kafka topics and message streams.
-- **Schema Registry**: Manages schemas for Kafka messages.
-- **KafkaHQ**: A UI for Kafka management and monitoring.
-
-## Setup Instructions
-
-1. Clone this repository:
-
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
-   ```
-
-2. Build and start the containers:
-
-   ```bash
-   docker-compose up --build
-   ```
-
-3. Access the services:
-
-   - **Spark Master**: [http://localhost:8080](http://localhost:8080)
-   - **Spark Worker 1**: [http://localhost:8081](http://localhost:8081)
-   - **Spark Worker 2**: [http://localhost:8082](http://localhost:8082)
-   - **PySpark Jupyter Notebook**: [http://localhost:8888](http://localhost:8888)
-   - **KafkaHQ**: [http://localhost:9080](http://localhost:9080)
-
-## Kafka Producer Example
-
-This project includes a Python script to produce messages to Kafka topics. Below is an example of how to configure a Kafka Producer:
+Below is an example Python script to create a Kafka consumer:
 
 ```python
-from kafka import KafkaProducer
-from json import dumps
+from kafka import KafkaConsumer
+from json import loads
 
-producer = KafkaProducer(
+consumer = KafkaConsumer(
+    'your-topic-name',
     bootstrap_servers=['kafka-broker:29092'],
-    value_serializer=lambda x: dumps(x).encode('utf-8'),
-    key_serializer=str.encode
+    auto_offset_reset='earliest',
+    enable_auto_commit=True,
+    group_id='your-group-id',
+    value_deserializer=lambda x: loads(x.decode('utf-8'))
 )
 
-producer.send('your-topic-name', key='your-key', value={'example': 'data'})
+for message in consumer:
+    print(f"Consumed message: {message.value}")
 ```
 
-This example is specific to **session16-2-create-kafka-consumer**. For more details, refer to the README file inside the `session16-2-create-kafka-consumer` folder.
+## How to Run
 
-## Monitoring Kafka Topics
+1. Ensure Kafka and Zookeeper are running.
+2. Replace `'your-topic-name'` and `'your-group-id'` in the script with your topic and group ID.
+3. Run the script:
 
-1. Open KafkaHQ at [http://localhost:9080](http://localhost:9080).
-2. Navigate to the **Topics** section to view the messages and topic details.
+   ```bash
+   python consumer.py
+   ```
 
-## Docker Compose Configuration
+4. Observe the messages being consumed in real time.
 
-The `docker-compose.yml` file defines the services and their configurations. Key highlights:
+## Notes
 
-- **Spark Master and Workers** share a network for seamless communication.
-- **Kafka Broker** is configured with Zookeeper and Schema Registry.
-- **KafkaHQ** connects to Kafka Broker and Schema Registry for monitoring.
+- The `auto_offset_reset` parameter can be set to `earliest` or `latest` based on when you want the consumer to start reading messages.
+- The `group_id` is essential for Kafka's consumer group management.
 
-## Additional Notes
+## Troubleshooting
 
-- Modify the `docker-compose.yml` file as per your requirements.
-- Ensure the required ports are not blocked by other applications.
+- If the consumer is not receiving messages, ensure the Kafka topic has messages and is correctly named in the script.
+- Check the Kafka Broker's logs for errors.
 
-## Contributing
+## Next Steps
 
-Feel free to open issues or create pull requests to improve this project.
-
-## License
-
-This project is licensed under the MIT License.
+Proceed to **session16-3-prepare-df-read-stream-spark** to process the consumed messages in Apache Spark.
