@@ -77,7 +77,7 @@ This allows you to control the rate of data ingestion for processing.
 
 Spark allows you to monitor the progress and performance of your streaming jobs using the Spark UI. Below is an example of the completed jobs:
 
-![Completed Jobs in Spark UI](sandbox:/mnt/data/image.png)
+![Completed Jobs in Spark UI]([sandbox:/mnt/data/image.png](https://github.com/zerangmajid/dockerized-spark-kafka/blob/bba05bd90b489df3e5c0394e79b7742e4bf81968/Images/sparkJobs.png))
 
 - Each row represents a completed job (or batch) in the streaming pipeline.
 - The `Duration` column shows the time taken to process each batch.
