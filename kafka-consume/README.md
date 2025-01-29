@@ -1,6 +1,6 @@
 # Kafka Consumer Integration
 
-This document provides details on implementing and using a Kafka consumer in the **session16-2-create-kafka-consumer** step of the project.
+This document provides details on implementing and using a Kafka consumer in the *create-kafka-consumer** step of the project.
 
 ## Overview
 
