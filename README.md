@@ -24,7 +24,8 @@ This project demonstrates the integration of Apache Spark and Apache Kafka using
 
    ```bash
    git clone https://github.com/zerangmajid/dockerized-spark-kafka.git
-   cd your-repo-name
+   cd dockerized-spark-kafka
+
    ```
 
 2. Build and start the containers:
