@@ -7,6 +7,7 @@ This document provides guidance on setting up a Spark Structured Streaming pipel
 Ensure your Spark cluster is up and running. The Spark Master UI should display active workers, as shown below:
 
 ![Spark Master UI](sandbox:/mnt/data/image.png)
+https://github.com/zerangmajid/dockerized-spark-kafka/blob/29c9f20424ecb41f05660968db301b84cb170b36/Images/spark.png
 
 ## 2. Configure Kafka in Spark
 
