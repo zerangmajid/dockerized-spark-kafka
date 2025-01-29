@@ -1,0 +1,180 @@
+version: "3"
+
+services:
+  spark-master:
+    image: majid/spark:3.4.1
+    build: ./docker/build/spark
+    container_name: spark-master
+    hostname: spark-master
+    ports:
+      - "8080:8080"
+      - "7077:7077"
+    volumes:
+       - ./data/apps:/opt/spark-apps
+       - ./data/data:/opt/spark-data
+    environment:
+      - SPARK_LOCAL_IP=spark-master
+      - SPARK_WORKLOAD=master
+      - SPARK_LOCAL_HOSTNAME=spark-master
+    networks:
+        - services
+
+  spark-worker1:
+    image: majid/spark:3.4.1
+    build: ./docker/build/spark
+    container_name: spark-worker1
+    hostname: spark-worker1
+    ports:
+      - "8081:8080"
+      - "7000:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker1
+      - SPARK_LOCAL_HOSTNAME=spark-worker1
+    volumes:
+       - ./data/apps:/opt/spark-apps
+       - ./data/data:/opt/spark-data
+    networks:
+       - services
+
+  spark-worker2:
+    image: majid/spark:3.4.1
+    build: ./docker/build/spark
+    container_name: spark-worker2
+    hostname: spark-worker2
+    ports:
+      - "8082:8080"
+      - "7001:7000"
+    depends_on:
+      - spark-master
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_DRIVER_MEMORY=1G
+      - SPARK_EXECUTOR_MEMORY=1G
+      - SPARK_WORKLOAD=worker
+      - SPARK_LOCAL_IP=spark-worker2
+      - SPARK_LOCAL_HOSTNAME=spark-worker2
+    volumes:
+        - ./data/apps:/opt/spark-apps
+        - ./data/data:/opt/spark-data
+    networks:
+        - services
+
+  pyspark:
+    image: majid/pyspark:3.4.1 
+    build: ./docker/build/pyspark
+    container_name: pyspark
+    hostname: pyspark
+    volumes:
+      - ./data/notebooks:/opt/spark-notebooks
+      - ./data/apps:/opt/spark-apps
+      - ./data/data:/opt/spark-data
+    ports:
+      - 8888:8888
+      - 4040-4042:4040-4042
+    environment:
+      - SPARK_MASTER=spark://spark-master:7077
+      - SPARK_LOCAL_IP=pyspark
+      - SPARK_WORKLOAD=submit
+      - SPARK_LOCAL_HOSTNAME=pyspark
+    depends_on:
+        - spark-master  
+    networks:
+        - services
+ 
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    hostname: kafka-zookeeper
+    container_name: kafka-zookeeper
+    ports:
+      - "2182:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    networks:
+      - services
+    restart: always
+
+  broker:
+    image: confluentinc/cp-kafka:7.5.0
+    hostname: kafka-broker
+    container_name: kafka-broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'kafka-zookeeper:2181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_CONFLUENT_LICENSE_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_CONFLUENT_BALANCER_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+      KAFKA_CONFLUENT_SCHEMA_REGISTRY_URL: http://schema-registry:8081
+      CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:29092
+      CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
+      CONFLUENT_METRICS_ENABLE: 'true'
+      CONFLUENT_SUPPORT_CUSTOMER_ID: 'anonymous'
+    networks:
+      - services
+    restart: always
+
+  schema-registry:
+    image: confluentinc/cp-schema-registry:7.4.0
+    hostname: schema-registry
+    container_name: schema-registry
+    depends_on:
+      - broker
+    ports:
+      - "9081:8081"
+    environment:
+      SCHEMA_REGISTRY_HOST_NAME: schema-registry
+      SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka-broker:29092'
+      SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:9081
+    networks:
+      - services
+    restart: always
+
+  kafkaHQ:
+    image: tchiotludo/akhq:0.24.0
+    container_name: kafkaHQ
+    hostname: kafkaHQ
+    depends_on:
+      - broker
+      - schema-registry
+    ports :
+      - 9080:8080
+    environment:
+      AKHQ_CONFIGURATION: | #In YAML, a block scalar "|" is a way to represent a string value that spans multiple lines
+        akhq:
+          connections:
+            docker-kafka-server:
+              properties:
+                bootstrap.servers: "kafka-broker:29092"
+              schema-registry:
+                url: "http://schema-registry:9081"  
+    networks:
+      - services
+    restart: always
+
+networks: 
+  services:
+    name: Spark_Kafka_Network
+volumes:
+  dfs_data: {}
